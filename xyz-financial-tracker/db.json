@@ -1,0 +1,42 @@
+{
+  "expenses": [
+    {
+      "id": "feb2",
+      "property": "Earthy Escape",
+      "category": "Utilities",
+      "amount": 20000,
+      "date": "2026-01-20",
+      "description": "",
+      "paymentMethod": "Cash"
+    },
+    {
+      "id": "add0",
+      "property": "Millennium Farm House",
+      "category": "Maintenance",
+      "amount": 35000,
+      "date": "2026-01-21",
+      "description": "Permission Demands\n",
+      "paymentMethod": "Cash"
+    }
+  ],
+  "income": [
+    {
+      "id": "e4fb",
+      "property": "Earthy Escape",
+      "source": "Booking",
+      "amount": 80000,
+      "date": "2026-01-20",
+      "description": "",
+      "paymentMethod": "Bank Transfer"
+    },
+    {
+      "id": "aca6",
+      "property": "Earthy Escape",
+      "source": "Booking",
+      "amount": 95000,
+      "date": "2026-01-21",
+      "description": "Booking for Party",
+      "paymentMethod": "Online"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+<div class="income-container">
+  <div class="income-header">
+    <div>
+      <h2>💰 Income Management</h2>
+      <p class="subtitle">Track and manage all revenue streams</p>
+    </div>
+    <button (click)="openForm()" class="add-btn">
+      ➕ Add Income
+    </button>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search income..."
+        class="search-input">
+    </div>
+    
+    <div class="filter-group">
+      <label>Source:</label>
+      <select (change)="onSourceFilterChange($event)" class="filter-select">
+        <option value="All">All Sources</option>
+        <option *ngFor="let source of sources" [value]="source">
+          {{ source }}
+        </option>
+      </select>
+    </div>
+
+    <div class="total-badge">
+      <span>Total: </span>
+      <strong>{{ formatCurrency(getTotalIncome()) }}</strong>
+    </div>
+  </div>
+
+  <!-- Source Summary -->
+  <div class="source-summary">
+    <h3>Revenue by Source</h3>
+    <div class="source-grid">
+      <div *ngFor="let source of sources" class="source-card">
+        <div class="source-name">{{ source }}</div>
+        <div class="source-amount">{{ formatCurrency(getSourceTotal(source)) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Income Table -->
+  <div class="income-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Property</th>
+          <th>Source</th>
+          <th>Description</th>
+          <th>Payment Method</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let income of filteredIncome">
+          <td>{{ income.date | date: 'MMM dd, yyyy' }}</td>
+          <td>
+            <span class="property-badge">{{ income.property }}</span>
+          </td>
+          <td>
+            <span class="source-badge">{{ income.source }}</span>
+          </td>
+          <td>{{ income.description }}</td>
+          <td>{{ income.paymentMethod }}</td>
+          <td class="amount-cell">{{ formatCurrency(income.amount) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button (click)="editIncome(income)" class="edit-btn" title="Edit">
+                ✏️
+              </button>
+              <button (click)="deleteIncome(income.id)" class="delete-btn" title="Delete">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredIncome.length === 0">
+          <td colspan="7" class="no-data">No income records found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Form Modal -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Edit Income' : 'Add New Income' }}</h3>
+        <button (click)="closeForm()" class="close-btn">✕</button>
+      </div>
+      
+      <form (ngSubmit)="saveIncome()" class="income-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Property *</label>
+            <select [(ngModel)]="currentIncome.property" name="property" required class="form-input">
+              <option *ngFor="let property of properties" [value]="property">
+                {{ property }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Source *</label>
+            <select [(ngModel)]="currentIncome.source" name="source" required class="form-input">
+              <option *ngFor="let source of sources" [value]="source">
+                {{ source }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Amount (₹) *</label>
+            <input 
+              type="number" 
+              [(ngModel)]="currentIncome.amount" 
+              name="amount"
+              min="0"
+              required
+              class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label>Date *</label>
+            <input 
+              type="date" 
+              [(ngModel)]="currentIncome.date" 
+              name="date"
+              required
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Method *</label>
+          <select [(ngModel)]="currentIncome.paymentMethod" name="paymentMethod" required class="form-input">
+            <option *ngFor="let method of paymentMethods" [value]="method">
+              {{ method }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea 
+            [(ngModel)]="currentIncome.description" 
+            name="description"
+            rows="3"
+            required
+            placeholder="Enter income details..."
+            class="form-input"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" (click)="closeForm()" class="cancel-btn">
+            Cancel
+          </button>
+          <button type="submit" class="submit-btn">
+            {{ isEditing ? 'Update' : 'Save' }} Income
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

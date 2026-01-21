@@ -1,0 +1,36 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <h1>XYZ Financial Tracker</h1>
+      <p class="subtitle">Farm House Management System</p>
+    </div>
+    
+    <div class="navbar-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <span class="icon">📊</span>
+        Dashboard
+      </a>
+      <a routerLink="/income" routerLinkActive="active" class="nav-link">
+        <span class="icon">💰</span>
+        Income
+      </a>
+      <a routerLink="/expenses" routerLinkActive="active" class="nav-link">
+        <span class="icon">💸</span>
+        Expenses
+      </a>
+    </div>
+
+    <div class="property-selector">
+      <label for="property-select">Property:</label>
+      <select 
+        id="property-select" 
+        [value]="selectedProperty"
+        (change)="onPropertyChange($event)"
+        class="property-select">
+        <option *ngFor="let property of properties" [value]="property">
+          {{ property }}
+        </option>
+      </select>
+    </div>
+  </div>
+</nav>

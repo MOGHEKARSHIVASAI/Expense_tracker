@@ -1,0 +1,171 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>Financial Dashboard</h2>
+    <div class="header-actions">
+      <div class="period-selector">
+        <button 
+          [class.active]="timePeriod === 'monthly'"
+          (click)="setTimePeriod('monthly')"
+          class="period-btn">
+          Monthly
+        </button>
+        <button 
+          [class.active]="timePeriod === 'quarterly'"
+          (click)="setTimePeriod('quarterly')"
+          class="period-btn">
+          Quarterly
+        </button>
+        <button 
+          [class.active]="timePeriod === 'yearly'"
+          (click)="setTimePeriod('yearly')"
+          class="period-btn">
+          Yearly
+        </button>
+      </div>
+      <button (click)="exportReport()" class="export-btn">
+        📥 Export Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card income-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-details">
+        <h3>Total Income</h3>
+        <p class="stat-value">{{ formatCurrency(stats.totalIncome) }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card expense-card">
+      <div class="stat-icon">💸</div>
+      <div class="stat-details">
+        <h3>Total Expenses</h3>
+        <p class="stat-value">{{ formatCurrency(stats.totalExpense) }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card profit-card" [class.negative]="stats.netProfit < 0">
+      <div class="stat-icon">📈</div>
+      <div class="stat-details">
+        <h3>Net Profit</h3>
+        <p class="stat-value">{{ formatCurrency(stats.netProfit) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Property Comparison (only when All Properties selected) -->
+  <div class="property-comparison" *ngIf="selectedProperty === 'All Properties'">
+    <h3>Property Comparison</h3>
+    <div class="comparison-grid">
+      <div class="property-card">
+        <h4>🌿 Earthy Escape</h4>
+        <div class="property-stats">
+          <div class="property-stat">
+            <span class="label">Income:</span>
+            <span class="value income">{{ formatCurrency(stats.earthyEscapeIncome) }}</span>
+          </div>
+          <div class="property-stat">
+            <span class="label">Expense:</span>
+            <span class="value expense">{{ formatCurrency(stats.earthyEscapeExpense) }}</span>
+          </div>
+          <div class="property-stat highlight">
+            <span class="label">Profit:</span>
+            <span class="value" [class.negative]="stats.earthyEscapeIncome - stats.earthyEscapeExpense < 0">
+              {{ formatCurrency(stats.earthyEscapeIncome - stats.earthyEscapeExpense) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="property-card">
+        <h4>🏡 Millennium Farm House</h4>
+        <div class="property-stats">
+          <div class="property-stat">
+            <span class="label">Income:</span>
+            <span class="value income">{{ formatCurrency(stats.millenniumIncome) }}</span>
+          </div>
+          <div class="property-stat">
+            <span class="label">Expense:</span>
+            <span class="value expense">{{ formatCurrency(stats.millenniumExpense) }}</span>
+          </div>
+          <div class="property-stat highlight">
+            <span class="label">Profit:</span>
+            <span class="value" [class.negative]="stats.millenniumIncome - stats.millenniumExpense < 0">
+              {{ formatCurrency(stats.millenniumIncome - stats.millenniumExpense) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-section">
+    <h3>Monthly Cash Flow</h3>
+    <div class="chart-container">
+      <div class="chart-bars">
+        <div *ngFor="let data of chartData" class="bar-group">
+          <div class="bars">
+            <div class="bar income-bar" 
+                 [style.height.px]="(data.income / 150000) * 200"
+                 [title]="'Income: ' + formatCurrency(data.income)">
+            </div>
+            <div class="bar expense-bar" 
+                 [style.height.px]="(data.expense / 150000) * 200"
+                 [title]="'Expense: ' + formatCurrency(data.expense)">
+            </div>
+          </div>
+          <div class="bar-label">{{ data.month }}</div>
+        </div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="legend-color income"></span>
+          <span>Income</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color expense"></span>
+          <span>Expenses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="recent-transactions">
+    <h3>Recent Transactions</h3>
+    <div class="transactions-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of recentTransactions">
+            <td>{{ transaction.date | date: 'MMM dd, yyyy' }}</td>
+            <td>{{ transaction.property }}</td>
+            <td>
+              <span class="type-badge" [class.income]="transaction.type === 'Income'">
+                {{ transaction.type }}
+              </span>
+            </td>
+            <td>{{ transaction.category }}</td>
+            <td>{{ transaction.description }}</td>
+            <td [class.income-amount]="transaction.type === 'Income'" 
+                [class.expense-amount]="transaction.type === 'Expense'">
+              {{ formatCurrency(transaction.amount) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
